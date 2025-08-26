@@ -5,6 +5,15 @@ const express = require('express');
 
 const app = express();
 
+// Add security headers for local development
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
 // Reuse the Vercel serverless handler for local dev
 const companiesHandler = require('./api/companies.js');
 
