@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Company List | Customer Care Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(173, 216, 230, 0.2) 0%, transparent 80%);
+      z-index: -1;
+      transition: background-position 0.1s ease;
+    }
+  </style>
+  <script>
+    // fetch and render companies on load
+    async function loadCompanies() {
+      const grid = document.getElementById('companyGrid');
+      const errorEl = document.getElementById('loadError');
+      try {
+        const res = await fetch('/api/companies');
+        const companies = await res.json();
+        grid.innerHTML = '';
+        companies.forEach(c => {
+          const card = document.createElement('div');
+          card.className = 'bg-white rounded-lg shadow-md p-4 flex flex-col items-center';
+          card.innerHTML = `
+            <img src="${c.logo || 'https://via.placeholder.com/60?text=Logo'}" alt="${c.name || ''}" class="mb-2 h-14 object-contain">
+            <p class="font-semibold">${c.name || ''}</p>
+            <p class="text-sm mt-1"><strong>Phone:</strong> ${c.phone || 'N/A'}</p>
+            <p class="text-sm"><strong>Email:</strong> ${c.email ? `<a class='text-blue-600 underline' href='mailto:${c.email}'>${c.email}</a>` : 'N/A'}</p>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (e) {
+        console.error('Failed to load companies', e);
+        errorEl.classList.remove('hidden');
+      }
+    }
+    window.addEventListener('DOMContentLoaded', loadCompanies);
+  </script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <script>
+    document.addEventListener('mousemove', e => {
+      document.body.style.setProperty('--x', `${e.clientX}px`);
+      document.body.style.setProperty('--y', `${e.clientY}px`);
+    });
+  </script>
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">Customer Care Hub</h1>
+      <nav class="space-x-6">
+        <a href="index.html" class="text-gray-700 font-medium hover:text-blue-600">Home</a>
+        <a href="companyList.html" class="text-blue-600 font-medium">Company</a>
+        <a href="contact.html" class="text-gray-700 font-medium hover:text-blue-600">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <section class="text-center mt-10 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">🛒 E-commerce Companies</h2>
+    <p class="text-gray-500">Explore major online platforms</p>
+  </section>
+
+  <!-- Company Cards -->
+  <section class="container mx-auto px-4 py-4">
+    <p id="loadError" class="hidden text-red-600 mb-3">Failed to load companies.</p>
+    <div id="companyGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center py-4 mt-10">
+    © 2025 Customer Care Hub | All rights reserved
+  </footer>
+</body>
+</html>

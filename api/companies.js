@@ -1,9 +1,10 @@
 'use strict';
 
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 
-const dataFilePath = path.join(process.cwd(), 'data', 'companies.json');
+// For Vercel, use __dirname to get the correct path
+const dataFilePath = path.join(__dirname, '..', 'data', 'companies.json');
 
 function normalizeCompany(rawCompany) {
   const name = (rawCompany.company_name || rawCompany['company name'] || rawCompany.name || '').toString().trim();
@@ -20,19 +21,25 @@ function normalizeCompany(rawCompany) {
   };
 }
 
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
   }
 
   try {
-    const fileContent = await fs.readFile(dataFilePath, 'utf8');
-    // Tolerate trailing commas or stray whitespace in JSON source
-    const cleaned = fileContent
-      .replace(/\uFEFF/g, '')
-      .replace(/,(\s*[}\]])/g, '$1');
-    const rawCompanies = JSON.parse(cleaned);
+    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+    const rawCompanies = JSON.parse(fileContent);
     const companies = rawCompanies
       .map(normalizeCompany)
       .filter(c => c.name && (c.email || c.phone));

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            bounceSlow: 'bounce 3s infinite',
+            fade: 'fadeIn 2s ease-in forwards'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(173, 216, 230, 0.3) 0%, transparent 80%);
+      z-index: -1;
+      transition: background-position 0.1s ease;
+      @keyframes scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <script>
+    document.addEventListener('mousemove', e => {
+      document.body.style.setProperty('--x', `${e.clientX}px`);
+      document.body.style.setProperty('--y', `${e.clientY}px`);
+    });
+  </script>
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600 animate-bounceSlow">Customer Care Hub</h1>
+      <nav class="space-x-6 relative">
+        <div class="dropdown inline-block relative">
+          <button class="text-gray-700 font-medium bg-blue-100 px-3 py-1 rounded hover:bg-blue-200">Company</button>
+          <ul class="dropdown-menu absolute hidden bg-white shadow-md mt-2 rounded w-48">
+            <li class="px-4 py-2 text-gray-500 text-sm">Search to see results</li>
+          </ul>
+        </div>
+        <a href="contact.html" class="text-gray-700 font-medium">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Tagline -->
+  <div class="text-center mt-6 animate-fade">
+    <h2 class="text-lg font-semibold text-gray-700">📞 One search away from every helpdesk</h2>
+  </div>
+
+  <!-- Search Section -->
+  <div class="container mx-auto px-4 py-10">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search for a company..."
+      class="w-full p-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      onkeyup="filterCompanies()"
+    />
+
+    <!-- Results Section -->
+    <div id="results" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+    <p id="noResults" class="mt-6 text-center text-gray-500 hidden">No results found.</p>
+  </div>
+  <!-- Logo Route Section -->
+<div class="bg-white py-4 border-t border-gray-200">
+  <div class="container mx-auto overflow-x-auto">
+    <div class="flex space-x-6 items-center justify-center animate-fade">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="h-10">
+      <img src="https://upload.wikimedia.org/wikipedia/en/1/12/Flipkart_logo.png" alt="Flipkart" class="h-10">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Myntra_Logo.png" alt="Myntra" class="h-10">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Ajio-Logo.svg/512px-Ajio-Logo.svg.png" alt="Ajio" class="h-10">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Meesho_Logo_Full.png" alt="Meesho" class="h-10">
+      <!-- Add more logos as needed -->
+    </div>
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center py-4">
+    © 2025 Customer Care Hub | All rights reserved
+  </footer>
+
+  <!-- Script -->
+  <script>
+    let companies = [];
+
+    fetch("/api/companies")
+      .then(response => response.json())
+      .then(data => {
+        companies = data;
+        console.log("Loaded companies:", companies); // Debug
+      })
+      .catch(error => console.error("Failed to load company data:", error));
+
+    function filterCompanies() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const results = document.getElementById("results");
+      const noResults = document.getElementById("noResults");
+
+      results.innerHTML = "";
+      results.classList.add("hidden");
+
+      let count = 0;
+
+      companies.forEach(company => {
+        if ((company.name || '').toLowerCase().includes(input)) {
+          const card = document.createElement("div");
+          card.className = "bg-white shadow-md rounded-lg p-4 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300";
+          card.innerHTML = `
+            <img src="${company.logo || ''}" alt="${company.name || ''} Logo" class="h-12 mb-2">
+            <h2 class="text-lg font-semibold">${company.name || ''}</h2>
+            ${company.service ? `<p class=\"text-sm text-gray-500\">${company.service}</p>` : ''}
+            <p class="mt-2 text-sm"><strong>Phone:</strong> ${company.phone || 'N/A'}</p>
+            <p class="text-sm"><strong>Email:</strong> ${company.email ? `<a href=\"mailto:${company.email}\" class=\"text-blue-600 underline\">${company.email}</a>` : 'N/A'}</p>
+          `;
+          results.appendChild(card);
+          results.classList.remove("hidden");
+          count++;
+        }
+      });
+
+      noResults.classList.toggle("hidden", count > 0);
+    }
+  </script>
+</body>
+</html>

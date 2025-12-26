@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Customer Care Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(173, 216, 230, 0.3) 0%, transparent 80%);
+      z-index: -1;
+      transition: background-position 0.1s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <script>
+    document.addEventListener('mousemove', e => {
+      document.body.style.setProperty('--x', `${e.clientX}px`);
+      document.body.style.setProperty('--y', `${e.clientY}px`);
+    });
+  </script>
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">Customer Care Hub</h1>
+      <nav class="space-x-6">
+        <a href="index.html" class="text-gray-700 font-medium hover:text-blue-600">Home</a>
+        <a href="contact.html" class="text-blue-600 font-medium">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Contact Content -->
+  <section class="container mx-auto px-4 py-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Contact Us</h2>
+    <p class="text-gray-600 mb-6">We’d love to hear from you! Here’s how you can reach out to us:</p>
+
+    <div class="bg-white shadow-md rounded-lg p-6 max-w-xl">
+      <p><strong>Name:</strong> Connect Care</p>
+      <p><strong>Email:</strong> <a href="mailto:yourname@example.com" class="text-blue-600 underline">yourname@example.com</a></p>
+      <p><strong>Phone:</strong> +91-91XXXXXX09</p>
+      <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/ConnectCare" target="_blank" class="text-blue-600 underline">linkedin.com/in/yourprofile</a></p>
+      <p><strong>GitHub:</strong> <a href="https://github.com/ConnectCare" target="_blank" class="text-blue-600 underline">github.com/yourusername</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center py-4 mt-12">
+    © 2025 Customer Care Hub | All rights reserved
+  </footer>
+</body>
+</html>

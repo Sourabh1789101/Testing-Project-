@@ -20,18 +20,18 @@ const companiesHandler = require('./api/companies.js');
 // API route
 app.get('/api/companies', (req, res) => companiesHandler(req, res));
 
-// Static frontend
-const frontendDir = path.join(__dirname, 'Frontend');
-app.use(express.static(frontendDir));
+// Static frontend - serve from public folder (Vercel structure)
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
 
 // Fallback to index for root
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(frontendDir, 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Optional: direct routes for static htmls
 app.get(['/contact.html', '/companyList.html'], (req, res) => {
-  res.sendFile(path.join(frontendDir, req.path.replace(/^\/+/, '')));
+  res.sendFile(path.join(publicDir, req.path.replace(/^\/+/, '')));
 });
 
 const preferredPort = parseInt(process.env.PORT, 10) || 3000;
