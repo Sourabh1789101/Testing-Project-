@@ -2,6 +2,8 @@
 
 A simple web application to search for customer care contact information of popular e-commerce companies.
 
+🌐 **Live Demo:** [https://testing-project-psi-rust.vercel.app/](https://testing-project-psi-rust.vercel.app/)
+
 ## 📁 Project Structure
 
 ```
